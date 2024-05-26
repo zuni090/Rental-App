@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "github.com/nagavineerpasam/react-native-realestate-app",
+    "slug": "snack-8d4eb2a0-94ee-42b5-83ad-421191521bf5",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "description": "github.com/nagavineerpasam/react-native-realestate-app @ Sep 14, 2022"
+  }
+}
