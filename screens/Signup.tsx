@@ -1,4 +1,4 @@
-import { Pressable,SafeAreaView, TextInput, Button, StyleSheet, Text, View } from 'react-native';
+import { Pressable,SafeAreaView, TextInput, Button, StyleSheet,Image, Text, View , ToastAndroid , KeyboardAvoidingView , ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
@@ -9,66 +9,117 @@ function Signup({ navigation }: { navigation: any }) {
     const [password, setPassword] = useState<any>('');
     const [repassword, setRepassword] = useState<any>('');
 
-    const handlesignup = () => {
-        navigation.navigate('Login')
-    }
+    const handleSignup = async () => {
+        // Input validation
+        if (!name || !email || !address || !password || !repassword) {
+          ToastAndroid.show('Please fill in all fields!', ToastAndroid.LONG);
+          return;
+        }
+    
+        if (password !== repassword) {
+          ToastAndroid.show('Passwords do not match!', ToastAndroid.LONG);
+          return;
+        }
+    
+        // Store data in AsyncStorage (assuming you want to store user data)
+        try {
+          const userData = {
+            name,
+            email,
+            address,
+          };
+          //await AsyncStorage.setItem('@userData', JSON.stringify(userData));
+          ToastAndroid.show('Signup successful!', ToastAndroid.LONG);
+            setName("");
+            setAddress("");
+            setPassword("");
+            setRepassword("");
+            setEmail("");
+          navigation.navigate('Login'); // Navigate to Login screen
+        } catch (error) {
+          console.error('Error saving data:', error);
+          ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
+        }
+      };
 
     const handlelogin = () => {
         navigation.navigate('Login')
     }
 
+    
+    const clearFields = () => {
+        setName("");
+        setAddress("");
+        setPassword("");
+        setRepassword("");
+        setEmail("");
+    }
+
+
     return (
-        <SafeAreaView style={{ flex: 1, marginVertical: 10 }}>
-            <View style={styles.container}>
-                <Text style={styles.heading}>Let's Get Started !</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your name"
-                    placeholderTextColor={'black'}
-                    value={name}
-                    onChangeText={setName}
-                    keyboardType="default"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your email"
-                    placeholderTextColor={'black'}
-                    value={email}
-                    onChangeText={setEmail}
-                    keyboardType="email-address"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your address"
-                    placeholderTextColor={'black'}
-                    value={address}
-                    onChangeText={setAddress}
-                    keyboardType="default"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter your password"
-                    placeholderTextColor={'black'}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={true}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Re enter password"
-                    placeholderTextColor={'black'}
-                    value={repassword}
-                    onChangeText={setRepassword}
-                    secureTextEntry={true}
-                />
-                <View style={styles.button}> 
-                    <Button title="Signup" onPress={handlesignup} color="#556b2f"  />
-                    <Pressable onPress={handlelogin}>
-                        <Text style={styles.text}>Already have an account ? Log In</Text>
-                    </Pressable>
-                </View>
-            </View>
+        <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <SafeAreaView>
+          <View style={styles.logoview}>
+            <Image source={require("../assets/img.png")} style={styles.logo} />
+          </View>
+          <Text style={styles.heading}>Rent your Dreams !</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            placeholderTextColor={'black'}
+            value={name}
+            onChangeText={setName}
+            keyboardType="default"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={'black'}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Address"
+            placeholderTextColor={'black'}
+            value={address}
+            onChangeText={setAddress}
+            keyboardType="default"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={'black'}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor={'black'}
+            value={repassword}
+            onChangeText={setRepassword}
+            secureTextEntry={true}
+          />
+          <Pressable onPress={clearFields}>
+              <View style={styles.clearTextView}>
+                <Text style={styles.ClearText}>Clear Fields ?</Text>
+              </View>
+            </Pressable>
+          <View style={styles.button}>
+            <Button title="Signup" onPress={handleSignup} color="#556b2f" />
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <View style={styles.textView}>
+                <Text style={styles.text}>Already have an account ? Log In</Text>
+              </View>
+            </Pressable>
+          </View>
         </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
     )
 }
 
@@ -76,14 +127,30 @@ export default Signup
 
 const styles = StyleSheet.create({
     container: {
-        margin: 22,
         flex: 1,
+        paddingHorizontal:15
     },
     heading: {
-        marginTop:30,
+        marginTop:5,
         fontSize: 24,
         fontWeight: '600',
         marginBottom: 15,
+    },
+    textView:{
+        justifyContent:"center",
+        alignItems:"center"
+    },
+    logoview:{
+        top:90,
+        height:'auto',
+        width:"100%",
+        marginBottom:25,
+    },
+    logo:{
+        alignSelf:'center',
+        height:200,
+        width:200,
+        resizeMode:'contain',
     },
     input: {
         height: 40,
@@ -95,11 +162,19 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     button:{
-        marginTop:30,
+        marginTop:20,
         width:"90%",
         alignSelf:'center',
     },
+    clearTextView:{
+        justifyContent:"center",
+        alignItems:"flex-end",
+        paddingHorizontal:20
+    },
     text:{
         marginTop:10,
+    },
+    ClearText:{
+        marginTop:2,
     }
 })

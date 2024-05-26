@@ -33,7 +33,7 @@ function ApartmentsList({ apartmentsListData, title }: apartmentsListType) {
   const renderItem: ListRenderItem<roomsType> = ({ item }) => <Apartment {...item}/>;
 
   return (
-    <SafeAreaView style={{ flex: 1 , marginVertical:10 }}>
+    <SafeAreaView style={{ flex: 1 , marginVertical:1 }}>
       <View style={styles.container}>
         <View>
           <Text style={styles.heading}>{title}</Text>
@@ -69,18 +69,18 @@ export default ApartmentsList;
 
 const styles = StyleSheet.create(({
   container: {
-    margin: 22,
+    margin: 15,
     flex: 1,
   },
   heading: {
     fontSize: 24,
     fontWeight: '600',
-    marginBottom: 15,
+    marginBottom: 5,
   },
   filterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom:12,
   },
   input: {
     flex: 1,

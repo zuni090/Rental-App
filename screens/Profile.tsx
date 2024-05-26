@@ -1,23 +1,26 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, Image , ToastAndroid } from 'react-native';
 
 function Profile({navigation}: {navigation: any}) {
 
-  const handlelogout = () =>{
+  const handlelogout = () =>{;
+    ToastAndroid.show('Logged off Successfully!', ToastAndroid.LONG);
     navigation.navigate('Login')
 
 }
   // Example user data
   const user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    address: '123 Main St, Anytown, USA',
-    phone: '(123) 456-7890',
+    name: 'Muhammad Zunique',
+    email: 'zunique@gmail.com',
+    address: 'Block 13D-1, House # L-92, Gulshan Iqbal, Karachi',
     image: 'https://via.placeholder.com/150', // Placeholder image URL
   };
 
   return (
     <View style={styles.container}>
+      <View style={styles.logoview}>
+          <Image source={require("../assets/img.png")} style={styles.logo} />
+      </View>
       <Image source={{ uri: user.image }} style={styles.profileImage} />
       <Text style={styles.heading}>{user.name}</Text>
       <View style={styles.divider} />
@@ -31,12 +34,11 @@ function Profile({navigation}: {navigation: any}) {
           <Text style={styles.label}>Address:</Text>
           <Text style={styles.info}>{user.address}</Text>
         </View>
-        <View style={styles.infoBox}>
-          <Text style={styles.label}>Phone:</Text>
-          <Text style={styles.info}>{user.phone}</Text>
-        </View>
       </View>
-      <Button title="Logout" onPress={handlelogout} color="#556b2f" />
+      <View style={styles.logoutBtn}>
+      <Button title="Logout ?" onPress={handlelogout} color="#800000" />
+      </View>
+      
     </View>
   );
 }
@@ -51,14 +53,34 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white', // Light background color
   },
+  logo:{
+    alignSelf:'center',
+    height:200,
+    width:200,
+    resizeMode:'contain',
+},
+logoview:{
+    top:8,
+    height:'auto',
+    width:"100%",
+    marginBottom:0,
+},
   profileImage: {
     width: 150,
     height: 150,
     borderRadius: 75, // This makes the image circular
-    marginBottom: 20,
+    marginBottom: 10,
+  },
+  logoutBtn:{
+    marginTop:20,
+    alignItems:"flex-end",
+    justifyContent:"flex-end",
+    marginLeft:"auto",
+    paddingHorizontal:25
   },
   infoContainer: {
     alignItems: 'flex-start',
+    marginHorizontal:35
   },
   infoBox: {
     flexDirection: 'row',

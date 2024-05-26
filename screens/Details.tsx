@@ -62,7 +62,7 @@ function Details() {
               <View style={styles.icons}>
                 <View style={styles.round}>
                   <Pressable onPress={() => navigation.goBack()}>
-                    <MaterialIcons style={styles.backarrow} name="arrow-back-ios" color="black" size={16}/>
+                    <MaterialIcons style={styles.backarrow} name="arrow-back-ios" color="#253529" size={16}/>
                   </Pressable>
                 </View>
                 <View style={styles.round}>
@@ -108,7 +108,7 @@ function Details() {
         <View>
           <Text style={styles.price}>{apartmentDetails.details.price}/month</Text>
         </View>
-        <View>
+        <View >
           {isBooked
           ? <Text style={styles.bookedText}>Booked Successfully</Text>
           : <TouchableOpacity onPress={onBookHandler} activeOpacity={0.8}>

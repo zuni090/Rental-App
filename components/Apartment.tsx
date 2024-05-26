@@ -25,7 +25,7 @@ function Apartment(item: roomsType) {
             <Text style={styles.price}>{item.details.price}/month</Text>
           </View>
           <View style={styles.arrow}>
-            <Ionicons name="arrow-forward" size={28} color="#000" />
+            <Ionicons name="arrow-forward" size={28} color="#253529" />
           </View>
         </View>
       </View>
