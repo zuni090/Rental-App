@@ -16,7 +16,7 @@ const wishListDefaultValues: WishListType = {
 
 export const WishListContext = createContext<WishListType>(wishListDefaultValues);
 
-const WishListProvider:FC<ReactNode> = ({ children }) => {
+const WishListProvider:FC<ReactNode> = ({children}) => {
   const [wishListIds, setWishListItems] = useState<number[]>(wishListDefaultValues.wishListIds);
 
   const addToWishList = (id: number) => setWishListItems((ids) => [...ids, id]);

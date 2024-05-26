@@ -1,7 +1,7 @@
 export default () => (
   {
     expo: {
-      name: 'HOMELY',
+      name: 'Renty',
       slug: 'rentalApp',
       version: '1.0.1',
       extra: {

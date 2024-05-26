@@ -1,7 +1,6 @@
 {
   "expo": {
-    "name": "github.com/nagavineerpasam/react-native-realestate-app",
-    "slug": "snack-8d4eb2a0-94ee-42b5-83ad-421191521bf5",
+    "name": "https://github.com/zuni090/Rental-App.git",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,6 +22,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "github.com/nagavineerpasam/react-native-realestate-app @ Sep 14, 2022"
+    "description": "https://github.com/zuni090/Rental-App.git @ May 26, 2024"
   }
 }

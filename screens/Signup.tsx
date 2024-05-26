@@ -64,7 +64,7 @@ function Signup({ navigation }: { navigation: any }) {
                 <View style={styles.button}> 
                     <Button title="Signup" onPress={handlesignup} color="#556b2f"  />
                     <Pressable onPress={handlelogin}>
-                        <Text style={styles.text}>Already have an account ?                       Log In</Text>
+                        <Text style={styles.text}>Already have an account ? Log In</Text>
                     </Pressable>
                 </View>
             </View>
