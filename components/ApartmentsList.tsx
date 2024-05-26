@@ -49,12 +49,16 @@ function ApartmentsList({ apartmentsListData, title }: apartmentsListType) {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          <FlatList
-            data={filteredData}
-            renderItem={renderItem}
-            keyExtractor={(item: roomsType) => item.id.toString()}
-            showsVerticalScrollIndicator={false}
-          />
+          {filteredData.length > 0 ? (
+            <FlatList
+              data={filteredData}
+              renderItem={renderItem}
+              keyExtractor={(item: roomsType) => item.id.toString()}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <Text>No houses available</Text>
+          )}
         </View>
       </View>
     </SafeAreaView>
