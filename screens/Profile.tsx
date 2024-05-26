@@ -1,7 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, Image } from 'react-native';
 
-function Profile() {
+function Profile({navigation}: {navigation: any}) {
+
+  const handlelogout = () =>{
+    navigation.navigate('Login')
+
+}
   // Example user data
   const user = {
     name: 'John Doe',
@@ -31,6 +36,7 @@ function Profile() {
           <Text style={styles.info}>{user.phone}</Text>
         </View>
       </View>
+      <Button title="Logout" onPress={handlelogout} color="#556b2f" />
     </View>
   );
 }
