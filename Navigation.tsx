@@ -4,6 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import Home from './screens/Home';
+import Login from './screens/Login';
+import Signup from './screens/Signup';
 import Profile from './screens/Profile';
 import WishList from './screens/WishList';
 import Details from './screens/Details';
@@ -81,6 +83,20 @@ function Navigation() {
             },
           }}
         >
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="Signup"
+            component={Signup}
+          />
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="Login"
+            component={Login}
+          />
           <Stack.Screen options={{ headerShown: false }} name="Bottomtabs" component={BottomTabs} />
           <Stack.Screen
             options={{
