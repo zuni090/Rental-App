@@ -1,6 +1,7 @@
 import { Pressable,SafeAreaView, TextInput, Button, StyleSheet,Image, Text, View , ToastAndroid , KeyboardAvoidingView , ScrollView } from 'react-native';
 import { useEffect, useState } from 'react';
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Signup({ navigation }: { navigation: any }) {
     const [name, setName] = useState<string>('');
@@ -27,8 +28,10 @@ function Signup({ navigation }: { navigation: any }) {
             name,
             email,
             address,
+            password
           };
-          //await AsyncStorage.setItem('@userData', JSON.stringify(userData));
+          const data = await AsyncStorage.setItem('@userData', JSON.stringify(userData));
+          console.log(userData);
           ToastAndroid.show('Signup successful!', ToastAndroid.LONG);
             setName("");
             setAddress("");
@@ -111,7 +114,7 @@ function Signup({ navigation }: { navigation: any }) {
             </Pressable>
           <View style={styles.button}>
             <Button title="Signup" onPress={handleSignup} color="#556b2f" />
-            <Pressable onPress={() => navigation.navigate('Login')}>
+            <Pressable onPress={handlelogin}>
               <View style={styles.textView}>
                 <Text style={styles.text}>Already have an account ? Log In</Text>
               </View>

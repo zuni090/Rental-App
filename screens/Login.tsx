@@ -1,34 +1,47 @@
-import { Pressable, SafeAreaView, TextInput, Button, StyleSheet, Text, View ,Image , ToastAndroid , KeyboardAvoidingView , ScrollView } from 'react-native';
-import React from 'react';
-import { useEffect, useState } from 'react';
+import { Pressable, SafeAreaView, TextInput, Button, StyleSheet, Text, View, Image, ToastAndroid, KeyboardAvoidingView, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Login({ navigation }: { navigation: any }) {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [storedUserData, setStoredUserData] = useState<any>(null);
 
-    const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<any>('');
-
-    const handlelogin = () => {
-        if (!email ||  !password) {
-            ToastAndroid.show('Please fill in all fields!', ToastAndroid.LONG);
-            return;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await AsyncStorage.getItem('@userData');
+        if (res) {
+          setStoredUserData(JSON.parse(res));
+          console.log(storedUserData)
         }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-            // Store data in AsyncStorage (assuming you want to store user data)
-            try {
-            //await AsyncStorage.setItem('@userData', JSON.stringify(userData));
-            ToastAndroid.show('Login successful!', ToastAndroid.LONG);
-                setPassword("");
-                setEmail("");
-            navigation.navigate('Bottomtabs'); // Navigate to Login screen
-            } catch (error) {
-            console.error('Error saving data:', error);
-            ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
-            }
-        };
+    fetchData();
+  }, []);
 
-    const handlesignup = () => {
-        navigation.navigate('Signup')
+  const handleLogin = async () => {
+    if (!email || !password) {
+      ToastAndroid.show('Please fill in all fields!', ToastAndroid.LONG);
+      return;
     }
+
+    if (storedUserData && email === storedUserData.email && password === storedUserData.password) {
+      ToastAndroid.show('Login successful!', ToastAndroid.LONG);
+      setEmail('');
+      setPassword('');
+      navigation.navigate('Bottomtabs'); // Navigate to the Bottomtabs screen
+    } else {
+      ToastAndroid.show('Invalid email or password!', ToastAndroid.LONG);
+    }
+  };
+
+  const handleSignup = () => {
+    navigation.navigate('Signup');
+  };
     return (
         <KeyboardAvoidingView behavior="padding" style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -55,8 +68,8 @@ function Login({ navigation }: { navigation: any }) {
                             secureTextEntry={true}
                         />
                         <View style={styles.button}>
-                            <Button title="Login" onPress={handlelogin} color="#556b2f" />
-                            <Pressable onPress={handlesignup}>
+                            <Button title="Login" onPress={handleLogin} color="#556b2f" />
+                            <Pressable onPress={handleSignup}>
                                 <View style={styles.textView}>
                                 <Text style={styles.text}>Don't have an account? Sign Up</Text>
                                 </View>
