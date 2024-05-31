@@ -27,10 +27,10 @@ function BottomTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: '#556b2f',
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#e5e4e2', // Custom background color for the tab bar
+          backgroundColor: 'white', // Custom background color for the tab bar
           borderTopWidth: 0,
           elevation: 0,
         },
