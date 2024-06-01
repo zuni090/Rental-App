@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, ToastAndroid } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, ToastAndroid, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Feather } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 function Profile({ navigation }: { navigation: any }) {
   const [user, setUser] = useState<any>({
     name: '',
     email: '',
     address: '',
-    image: '',
+    image: null,
   });
 
   useEffect(() => {
@@ -27,7 +29,6 @@ function Profile({ navigation }: { navigation: any }) {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('@userData');
       ToastAndroid.show('Logged off Successfully!', ToastAndroid.LONG);
       navigation.navigate('Login');
     } catch (error) {
@@ -36,16 +37,53 @@ function Profile({ navigation }: { navigation: any }) {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      await AsyncStorage.removeItem('@userData');  // this line removes user object and user details do not show on logging in again.
+      ToastAndroid.show('Account Deleted Successfully!', ToastAndroid.LONG);
+      navigation.navigate('Signup');
+    } catch (error) {
+      console.error('Error logging out:', error);
+      ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
+    }
+  };
+
+
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      updateUserImage((result.assets[0].uri));
+    }
+  };
+  const updateUserImage = (newImage: any) => {
+    setUser((prevUser: any) => ({ ...prevUser, image: newImage }));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoview}>
         <Image source={require("../assets/img.png")} style={styles.logo} />
       </View>
-      <Image
-        source={{ uri: user.image || 'https://via.placeholder.com/150' }}
-        style={styles.profileImage}
-      />
-      {!user.image && <Text style={styles.noImage}>No image available</Text>}
+
+      {user.image ? (
+        <Image source={{ uri: user.image }} style={styles.profileImage} />
+      ) : (
+        <Image source={require("../assets/placeholder.png")} style={styles.profileImage} />
+      )}
+
+      <Pressable onPress={pickImage} style={styles.camera}>
+        <Feather name="camera" size={24} color="#556b2f" />
+      </Pressable>
+      
       <Text style={styles.heading}>{user.name}</Text>
       <View style={styles.divider} />
       <View style={styles.infoContainer}>
@@ -61,6 +99,9 @@ function Profile({ navigation }: { navigation: any }) {
       <View style={styles.logoutBtn}>
         <Button title="Logout" onPress={handleLogout} color="#800000" />
       </View>
+      <View style={styles.logoutBtn}>
+        <Button title="Delete" onPress={handleDelete} color="purple" />
+      </View>
     </View>
   );
 }
@@ -70,28 +111,39 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     backgroundColor: 'white',
   },
   logo: {
     alignSelf: 'center',
-    height: 200,
+    height: 100,
     width: 200,
     resizeMode: 'contain',
   },
   logoview: {
-    top: 8,
-    height: 'auto',
     width: "100%",
-    marginBottom: 0,
+    paddingBottom: 30,
   },
   profileImage: {
     width: 150,
     height: 150,
     borderRadius: 75,
     marginBottom: 10,
+    borderColor: 'lightgrey',
+    borderWidth: 4,
+  },
+  camera: {
+    position: 'absolute',
+    right: 110,
+    top: 260,
+    height: '5%',
+    width: '11%',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightgrey',
+
   },
   noImage: {
     color: 'red',
