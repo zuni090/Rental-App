@@ -2,6 +2,7 @@ import { Pressable, SafeAreaView, TextInput, Button, StyleSheet, Image, Text, Vi
 import { useEffect, useState } from 'react';
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
 
 function Signup({ navigation }: { navigation: any }) {
   const [name, setName] = useState<string>('');
@@ -9,11 +10,12 @@ function Signup({ navigation }: { navigation: any }) {
   const [address, setAddress] = useState<string>('');
   const [password, setPassword] = useState<any>('');
   const [repassword, setRepassword] = useState<any>('');
+  const [image, setImage] = useState<string | null>(null);
 
   const handleSignup = async () => {
     // Input validation
-    if (!name || !email || !address || !password || !repassword) {
-      ToastAndroid.show('Please fill in all fields!', ToastAndroid.LONG);
+    if (!name || !email || !address || !password || !repassword || !image) {
+      ToastAndroid.show('Please fill in all fields and upload an image!', ToastAndroid.LONG);
       return;
     }
 
@@ -28,16 +30,12 @@ function Signup({ navigation }: { navigation: any }) {
         name,
         email,
         address,
-        password
+        password,
+        image,
       };
-      const data = await AsyncStorage.setItem('@userData', JSON.stringify(userData));
-      console.log(userData);
+      await AsyncStorage.setItem('@userData', JSON.stringify(userData));
       ToastAndroid.show('Signup successful!', ToastAndroid.LONG);
-      setName("");
-      setAddress("");
-      setPassword("");
-      setRepassword("");
-      setEmail("");
+      clearFields();
       navigation.navigate('Login'); // Navigate to Login screen
     } catch (error) {
       console.error('Error saving data:', error);
@@ -45,19 +43,31 @@ function Signup({ navigation }: { navigation: any }) {
     }
   };
 
-  const handlelogin = () => {
-    navigation.navigate('Login')
-  }
-
+  const handleLogin = () => {
+    navigation.navigate('Login');
+  };
 
   const clearFields = () => {
-    setName("");
-    setAddress("");
-    setPassword("");
-    setRepassword("");
-    setEmail("");
-  }
+    setName('');
+    setEmail('');
+    setAddress('');
+    setPassword('');
+    setRepassword('');
+    setImage(null);
+  };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -107,6 +117,14 @@ function Signup({ navigation }: { navigation: any }) {
             onChangeText={setRepassword}
             secureTextEntry={true}
           />
+
+          <Pressable onPress={pickImage} style={styles.imagePicker}>
+            <Text style={styles.imagePickerText}>Upload Image</Text>
+          </Pressable>
+          {image && (
+            <Image source={{ uri: image }} style={styles.profileImage} />
+          )}
+
           <Pressable onPress={clearFields}>
             <View style={styles.clearTextView}>
               <Text style={styles.ClearText}>Clear Fields ?</Text>
@@ -114,7 +132,7 @@ function Signup({ navigation }: { navigation: any }) {
           </Pressable>
           <View style={styles.button}>
             <Button title="Signup" onPress={handleSignup} color="#556b2f" />
-            <Pressable onPress={handlelogin}>
+            <Pressable onPress={handleLogin}>
               <View style={styles.textView}>
                 <Text style={styles.text}>Already have an account ? Log In</Text>
               </View>
@@ -123,15 +141,15 @@ function Signup({ navigation }: { navigation: any }) {
         </SafeAreaView>
       </ScrollView>
     </KeyboardAvoidingView>
-  )
+  );
 }
 
-export default Signup
+export default Signup;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
   },
   heading: {
     marginTop: 5,
@@ -140,13 +158,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   textView: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoview: {
     top: 90,
     height: 'auto',
-    width: "100%",
+    width: '100%',
     marginBottom: 25,
   },
   logo: {
@@ -162,22 +180,39 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
-    borderRadius: 5
+    borderRadius: 5,
   },
   button: {
     marginTop: 20,
-    width: "90%",
+    width: '90%',
     alignSelf: 'center',
   },
   clearTextView: {
-    justifyContent: "center",
-    alignItems: "flex-end",
-    paddingHorizontal: 20
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
   },
   text: {
     marginTop: 10,
   },
   ClearText: {
     marginTop: 2,
-  }
-})
+  },
+  imagePicker: {
+    alignItems: 'center',
+    backgroundColor: 'lightgrey',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  imagePickerText: {
+    color: 'black',
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginTop: 10,
+    alignSelf: 'center',
+  },
+});

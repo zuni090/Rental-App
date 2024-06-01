@@ -1,51 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, ToastAndroid, Pressable } from 'react-native';
+import { Pressable, SafeAreaView, TextInput, Button, StyleSheet, Image, Text, View, ToastAndroid, KeyboardAvoidingView, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
+import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
-function Profile({ navigation }: { navigation: any }) {
-  const [user, setUser] = useState<any>({
-    name: '',
-    email: '',
-    address: '',
-    image: null,
-  });
+function Signup({ navigation }: { navigation: any }) {
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [password, setPassword] = useState<any>('');
+  const [repassword, setRepassword] = useState<any>('');
+  const [image, setImage] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userData = await AsyncStorage.getItem('@userData');
-        if (userData) {
-          setUser(JSON.parse(userData));
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  const handleSignup = async () => {
+    // Input validation
+    if (!name || !email || !address || !password || !repassword || !image) {
+      ToastAndroid.show('Please fill in all fields and upload an image!', ToastAndroid.LONG);
+      return;
+    }
 
-    fetchUserData();
-  }, []);
+    if (password !== repassword) {
+      ToastAndroid.show('Passwords do not match!', ToastAndroid.LONG);
+      return;
+    }
 
-  const handleLogout = async () => {
+    // Store data in AsyncStorage (assuming you want to store user data)
     try {
-      ToastAndroid.show('Logged off Successfully!', ToastAndroid.LONG);
-      navigation.navigate('Login');
+      const userData = {
+        name,
+        email,
+        address,
+        password,
+        image,
+      };
+      await AsyncStorage.setItem('@userData', JSON.stringify(userData));
+      ToastAndroid.show('Signup successful!', ToastAndroid.LONG);
+      clearFields();
+      navigation.navigate('Login'); // Navigate to Login screen
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error('Error saving data:', error);
       ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
     }
   };
 
-  const handleDelete = async () => {
-    try {
-      await AsyncStorage.removeItem('@userData');
-      ToastAndroid.show('Account Deleted Successfully!', ToastAndroid.LONG);
-      navigation.navigate('Signup');
-    } catch (error) {
-      console.error('Error logging out:', error);
-      ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
-    }
+  const handleLogin = () => {
+    navigation.navigate('Login');
+  };
+
+  const clearFields = () => {
+    setName('');
+    setEmail('');
+    setAddress('');
+    setPassword('');
+    setRepassword('');
+    setImage(null);
   };
 
   const pickImage = async () => {
@@ -56,138 +64,155 @@ function Profile({ navigation }: { navigation: any }) {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
-      updateUserImage(result.assets[0].uri);
-    }
-  };
-
-  const updateUserImage = async (newImage: any) => {
-    const updatedUser = { ...user, image: newImage };
-    setUser(updatedUser);
-    try {
-      await AsyncStorage.setItem('@userData', JSON.stringify(updatedUser));
-    } catch (error) {
-      console.error('Error saving user data:', error);
+      setImage(result.assets[0].uri);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoview}>
-        <Image source={require("../assets/img.png")} style={styles.logo} />
-      </View>
+    <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <SafeAreaView>
+          <View style={styles.logoview}>
+            <Image source={require("../assets/img.png")} style={styles.logo} />
+          </View>
+          <Text style={styles.heading}>Rent your Dreams !</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Name"
+            placeholderTextColor={'black'}
+            value={name}
+            onChangeText={setName}
+            keyboardType="default"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor={'black'}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Address"
+            placeholderTextColor={'black'}
+            value={address}
+            onChangeText={setAddress}
+            keyboardType="default"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor={'black'}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password"
+            placeholderTextColor={'black'}
+            value={repassword}
+            onChangeText={setRepassword}
+            secureTextEntry={true}
+          />
 
-      {user.image ? (
-        <Image source={{ uri: user.image }} style={styles.profileImage} />
-      ) : (
-        <Image source={require("../assets/placeholder.png")} style={styles.profileImage} />
-      )}
+          <Pressable onPress={pickImage} style={styles.imagePicker}>
+            <Text style={styles.imagePickerText}>Upload Image</Text>
+          </Pressable>
+          {image && (
+            <Image source={{ uri: image }} style={styles.profileImage} />
+          )}
 
-      <Pressable onPress={pickImage} style={styles.camera}>
-        <Feather name="camera" size={24} color="#556b2f" />
-      </Pressable>
-
-      <Text style={styles.heading}>{user.name}</Text>
-      <View style={styles.divider} />
-      <View style={styles.infoContainer}>
-        <View style={styles.infoBox}>
-          <Text style={styles.label}>Email:</Text>
-          <Text style={styles.info}>{user.email}</Text>
-        </View>
-        <View style={styles.infoBox}>
-          <Text style={styles.label}>Address:</Text>
-          <Text style={styles.info}>{user.address}</Text>
-        </View>
-      </View>
-      <View style={styles.logoutBtn}>
-        <Button title="Logout" onPress={handleLogout} color="#800000" />
-      </View>
-      <View style={styles.logoutBtn}>
-        <Button title="Delete" onPress={handleDelete} color="purple" />
-      </View>
-    </View>
+          <Pressable onPress={clearFields}>
+            <View style={styles.clearTextView}>
+              <Text style={styles.ClearText}>Clear Fields ?</Text>
+            </View>
+          </Pressable>
+          <View style={styles.button}>
+            <Button title="Signup" onPress={handleSignup} color="#556b2f" />
+            <Pressable onPress={handleLogin}>
+              <View style={styles.textView}>
+                <Text style={styles.text}>Already have an account ? Log In</Text>
+              </View>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
-export default Profile;
+export default Signup;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 15,
+  },
+  heading: {
+    marginTop: 5,
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 15,
+  },
+  textView: {
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'white',
+  },
+  logoview: {
+    top: 90,
+    height: 'auto',
+    width: '100%',
+    marginBottom: 25,
   },
   logo: {
     alignSelf: 'center',
-    height: 100,
+    height: 200,
     width: 200,
     resizeMode: 'contain',
   },
-  logoview: {
-    width: "100%",
-    paddingBottom: 30,
+  input: {
+    height: 40,
+    marginTop: 10,
+    marginBottom: 10,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  button: {
+    marginTop: 20,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  clearTextView: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+  },
+  text: {
+    marginTop: 10,
+  },
+  ClearText: {
+    marginTop: 2,
+  },
+  imagePicker: {
+    alignItems: 'center',
+    backgroundColor: 'lightgrey',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  imagePickerText: {
+    color: 'black',
   },
   profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 10,
-    borderColor: 'lightgrey',
-    borderWidth: 4,
-  },
-  camera: {
-    position: 'absolute',
-    right: 110,
-    top: 260,
-    height: '5%',
-    width: '11%',
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'lightgrey',
-  },
-  noImage: {
-    color: 'red',
-    fontStyle: 'italic',
-    marginBottom: 10,
-  },
-  logoutBtn: {
-    marginTop: 20,
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    marginLeft: "auto",
-    paddingHorizontal: 25,
-  },
-  infoContainer: {
-    alignItems: 'flex-start',
-    marginHorizontal: 35,
-  },
-  infoBox: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: 5,
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  label: {
-    fontWeight: 'bold',
-    marginRight: 10,
-    width: 70,
-  },
-  info: {
-    fontSize: 18,
-    color: '#333',
-  },
-  divider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#ddd',
-    marginVertical: 10,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginTop: 10,
+    alignSelf: 'center',
   },
 });
