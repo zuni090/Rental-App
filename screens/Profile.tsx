@@ -39,7 +39,7 @@ function Profile({ navigation }: { navigation: any }) {
 
   const handleDelete = async () => {
     try {
-      await AsyncStorage.removeItem('@userData');  // this line removes user object and user details do not show on logging in again.
+      await AsyncStorage.removeItem('@userData');
       ToastAndroid.show('Account Deleted Successfully!', ToastAndroid.LONG);
       navigation.navigate('Signup');
     } catch (error) {
@@ -47,8 +47,6 @@ function Profile({ navigation }: { navigation: any }) {
       ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
     }
   };
-
-
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -61,11 +59,18 @@ function Profile({ navigation }: { navigation: any }) {
     console.log(result);
 
     if (!result.canceled) {
-      updateUserImage((result.assets[0].uri));
+      updateUserImage(result.assets[0].uri);
     }
   };
-  const updateUserImage = (newImage: any) => {
-    setUser((prevUser: any) => ({ ...prevUser, image: newImage }));
+
+  const updateUserImage = async (newImage: any) => {
+    const updatedUser = { ...user, image: newImage };
+    setUser(updatedUser);
+    try {
+      await AsyncStorage.setItem('@userData', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
   };
 
   return (
@@ -83,7 +88,7 @@ function Profile({ navigation }: { navigation: any }) {
       <Pressable onPress={pickImage} style={styles.camera}>
         <Feather name="camera" size={24} color="#556b2f" />
       </Pressable>
-      
+
       <Text style={styles.heading}>{user.name}</Text>
       <View style={styles.divider} />
       <View style={styles.infoContainer}>
@@ -143,7 +148,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'lightgrey',
-
   },
   noImage: {
     color: 'red',
