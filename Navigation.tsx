@@ -10,6 +10,7 @@ import Profile from './screens/Profile';
 import WishList from './screens/WishList';
 import Details from './screens/Details';
 import Map from './screens/Map';
+import TakePhoto from './screens/TakePhoto';
 import WishListProvider from './context/wishlistcontext';
 
 const Stack = createStackNavigator();
@@ -89,6 +90,13 @@ function Navigation() {
             }}
             name="Signup"
             component={Signup}
+          />
+          <Stack.Screen
+            options={{
+              headerShown: false,
+            }}
+            name="TakePhoto"
+            component={TakePhoto}
           />
           <Stack.Screen
             options={{
