@@ -14,8 +14,9 @@ function Signup({ navigation }: { navigation: any }) {
 
   const handleSignup = async () => {
     // Input validation
-    if (!name || !email || !address || !password || !repassword || !image) {
-      ToastAndroid.show('Please fill in all fields and upload an image!', ToastAndroid.LONG);
+    // if (!name || !email || !address || !password || !repassword || !image) {
+    if (!name || !email || !address || !password || !repassword) {
+      ToastAndroid.show('Please fill in all fields', ToastAndroid.LONG);
       return;
     }
 
@@ -35,8 +36,9 @@ function Signup({ navigation }: { navigation: any }) {
       };
       await AsyncStorage.setItem('@userData', JSON.stringify(userData));
       ToastAndroid.show('Signup successful!', ToastAndroid.LONG);
+      console.log(userData);
       clearFields();
-      navigation.navigate('Login'); // Navigate to Login screen
+      navigation.navigate('TakePhoto'); // Navigate to Login screen
     } catch (error) {
       console.error('Error saving data:', error);
       ToastAndroid.show('An error occurred. Please try again.', ToastAndroid.LONG);
@@ -118,12 +120,12 @@ function Signup({ navigation }: { navigation: any }) {
             secureTextEntry={true}
           />
 
-          <Pressable onPress={pickImage} style={styles.imagePicker}>
+          {/* <Pressable onPress={pickImage} style={styles.imagePicker}>
             <Text style={styles.imagePickerText}>Upload Image</Text>
           </Pressable>
           {image && (
             <Image source={{ uri: image }} style={styles.profileImage} />
-          )}
+          )} */}
 
           <Pressable onPress={clearFields}>
             <View style={styles.clearTextView}>
