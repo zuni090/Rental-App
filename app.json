@@ -22,6 +22,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "https://github.com/zuni090/Rental-App.git @ May 26, 2024"
-  }
+    "description": "https://github.com/zuni090/Rental-App.git @ May 26, 2024",
+    "extra": {
+      "eas": {
+        "projectId": "959e518a-e477-4275-b31d-9f99c5329755"
+      }
+    }
+}
 }

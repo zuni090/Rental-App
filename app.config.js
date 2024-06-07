@@ -38,6 +38,11 @@ export default () => (
       web: {
         favicon: './assets/favicon.png',
       },
+      extra: {
+      eas: {
+        "projectId": "959e518a-e477-4275-b31d-9f99c5329755"
+      }
+    }
     },
   }
 );
